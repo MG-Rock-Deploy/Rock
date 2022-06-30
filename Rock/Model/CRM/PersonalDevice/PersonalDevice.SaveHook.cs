@@ -16,6 +16,7 @@
 //
 
 using Rock.Data;
+using Rock.Web.Cache;
 using System.Linq;
 
 namespace Rock.Model
@@ -37,7 +38,7 @@ namespace Rock.Model
 
                 if ( State == EntityContextState.Added && Entity.Manufacturer == "Apple" && Entity.Model.Contains( ',' ) )
                 {
-                    var deviceModel = new DefinedValueService( rockContext ).Queryable().Where( d => d.Value == Entity.Model ).FirstOrDefault();
+                    var deviceModel = DefinedTypeCache.Get( SystemGuid.DefinedType.APPLE_DEVICE_MODELS )?.DefinedValues?.FirstOrDefault( v => v.Value == Entity.Model );
                     if ( deviceModel != null )
                     {
                         Entity.Model = deviceModel.Description;
