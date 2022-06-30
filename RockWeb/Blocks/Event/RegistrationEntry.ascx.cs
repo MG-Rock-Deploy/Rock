@@ -2740,8 +2740,50 @@ namespace RockWeb.Blocks.Event
                 }
                 else
                 {
-                    // otherwise look for one and one-only match by name/email
-                    registrar = personService.FindPerson( registration.FirstName, registration.LastName, registration.ConfirmationEmail, true );
+                    // WARNING!  This is experimental code only!!
+
+                    // Use the first registrant if that is what the Template specifies.
+                    // (but shouldn't this check be done even higher -- regardless of whether there is a "CurrentPerson"?
+                    // Perhaps not, it's possible that a "CurrentPerson" should always be the "registrar" if the person is logged in
+                    // regardless of the RegistrarOption.UseFirstRegistrant option.)
+
+                    if ( RegistrationTemplate.RegistrarOption == RegistrarOption.UseFirstRegistrant )
+                    {
+                        // So, here we should probably grab the "first" registrant from the State.
+                        var firstRegistrantInfo = RegistrationState.Registrants.FirstOrDefault();
+
+                        // You should probably make sure you got a non-null value in firstRegistrantInfo...
+
+                        // If you look below, you will see "if ( registrantInfo.Id > 0 )" ... But what does that mean?
+                        // Does that mean we should not try
+                        
+                        // This code below is not clean and this chunk of logic should probably be put into
+                        // a private method because it is similar to the code below and can probably be reused below.
+
+                        // So now we're just pulling any given values from this first registrant info.  Some of these
+                        // may not even be included on the RegistrationTemplate form, but we want this info if it was
+                        // given since that is how we do the PersonMatchQuery(...) elsewhere too.
+
+                        string firstName = firstRegistrantInfo.GetFirstName( RegistrationTemplate );
+                        string lastName = firstRegistrantInfo.GetLastName( RegistrationTemplate );
+                        string email = firstRegistrantInfo.GetEmail( RegistrationTemplate );
+                        var birthday = firstRegistrantInfo.GetPersonFieldValue( RegistrationTemplate, RegistrationPersonFieldType.Birthdate ).ToStringSafe().AsDateTime();
+                        var mobilePhone = firstRegistrantInfo.GetPersonFieldValue( RegistrationTemplate, RegistrationPersonFieldType.MobilePhone ).ToStringSafe();
+
+                        // Try to find a matching person based on name, email address, mobile phone, and birthday. If these were not provided they are not considered.
+                        var personQuery = new PersonService.PersonMatchQuery( firstName, lastName, email, mobilePhone, gender: null, birthDate: birthday );
+
+                        // Lastly, if we pass true here, it will cause the matched person's email to be updated to the given value,
+                        // so we should probably check the ForceEmailUpdate block setting and only pass true if it was true.
+
+                        registrar = personService.FindPerson( personQuery, true );
+                    }
+                    else
+                    {
+                        // otherwise look for one and one-only match by name/email
+                        registrar = personService.FindPerson( registration.FirstName, registration.LastName, registration.ConfirmationEmail, true );
+                    }
+
                     if ( registrar != null )
                     {
                         registration.PersonAliasId = registrar.PrimaryAliasId;
