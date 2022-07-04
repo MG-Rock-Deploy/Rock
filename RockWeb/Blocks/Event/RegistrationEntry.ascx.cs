@@ -2740,29 +2740,11 @@ namespace RockWeb.Blocks.Event
                 }
                 else
                 {
-                    // WARNING!  This is experimental code only!!
-
-                    // Use the first registrant if that is what the Template specifies.
-                    // (but shouldn't this check be done even higher -- regardless of whether there is a "CurrentPerson"?
-                    // Perhaps not, it's possible that a "CurrentPerson" should always be the "registrar" if the person is logged in
-                    // regardless of the RegistrarOption.UseFirstRegistrant option.)
-
                     if ( RegistrationTemplate.RegistrarOption == RegistrarOption.UseFirstRegistrant )
                     {
                         // So, here we should probably grab the "first" registrant from the State.
                         var firstRegistrantInfo = RegistrationState.Registrants.FirstOrDefault();
-
-                        // You should probably make sure you got a non-null value in firstRegistrantInfo...
-
-                        // If you look below, you will see "if ( registrantInfo.Id > 0 )" ... But what does that mean?
-                        // Does that mean we should not try
-                        
-                        // This code below is not clean and this chunk of logic should probably be put into
-                        // a private method because it is similar to the code below and can probably be reused below.
-
-                        // So now we're just pulling any given values from this first registrant info.  Some of these
-                        // may not even be included on the RegistrationTemplate form, but we want this info if it was
-                        // given since that is how we do the PersonMatchQuery(...) elsewhere too.
+                        bool forceEmailUpdate = GetAttributeValue( AttributeKey.ForceEmailUpdate ).AsBoolean();
 
                         string firstName = firstRegistrantInfo.GetFirstName( RegistrationTemplate );
                         string lastName = firstRegistrantInfo.GetLastName( RegistrationTemplate );
@@ -2773,10 +2755,7 @@ namespace RockWeb.Blocks.Event
                         // Try to find a matching person based on name, email address, mobile phone, and birthday. If these were not provided they are not considered.
                         var personQuery = new PersonService.PersonMatchQuery( firstName, lastName, email, mobilePhone, gender: null, birthDate: birthday );
 
-                        // Lastly, if we pass true here, it will cause the matched person's email to be updated to the given value,
-                        // so we should probably check the ForceEmailUpdate block setting and only pass true if it was true.
-
-                        registrar = personService.FindPerson( personQuery, true );
+                        registrar = personService.FindPerson( personQuery, forceEmailUpdate );
                     }
                     else
                     {
@@ -2960,24 +2939,45 @@ namespace RockWeb.Blocks.Event
                         }
                     }
 
+                    /**
+                      * 06/07/2022 - KA
+                      * 
+                      * Logic is as follows. If the Template RegistrarOption was set to UseFirstRegistrant
+                      * then chances are a Person was created or found for the first Registrant and used
+                      * as the Registrar. In that case then we don't create a new Person for the first
+                      * Registrant. Otherwise we go ahead and create a new Person. This is of Particular
+                      * importance when the AccountProtectionProfilesForDuplicateDetectionToIgnore includes
+                      * AccountProtectionProfile.Low. That means the PersonMatch query will return a null
+                      * any time it is called. This prevents us from creating duplicate Person entities for
+                      * both the Registrar and first Registrant who are the same person in this scenario.
+                    */
+                    bool isCreatedAsRegistrant = RegistrationTemplate.RegistrarOption == RegistrarOption.UseFirstRegistrant && registrantInfo == RegistrationState.Registrants.FirstOrDefault();
+
                     if ( person == null )
                     {
-                        // If a match was not found, create a new person
-                        person = new Person();
-                        person.FirstName = firstName;
-                        person.LastName = lastName;
-                        person.IsEmailActive = true;
-                        person.Email = email;
-                        person.EmailPreference = EmailPreference.EmailAllowed;
-                        person.RecordTypeValueId = DefinedValueCache.Get( Rock.SystemGuid.DefinedValue.PERSON_RECORD_TYPE_PERSON.AsGuid() ).Id;
-                        if ( dvcConnectionStatus != null )
+                        if ( isCreatedAsRegistrant )
                         {
-                            person.ConnectionStatusValueId = dvcConnectionStatus.Id;
+                            person = registrar;
                         }
-
-                        if ( dvcRecordStatus != null )
+                        else
                         {
-                            person.RecordStatusValueId = dvcRecordStatus.Id;
+                            // If a match was not found, create a new person
+                            person = new Person();
+                            person.FirstName = firstName;
+                            person.LastName = lastName;
+                            person.IsEmailActive = true;
+                            person.Email = email;
+                            person.EmailPreference = EmailPreference.EmailAllowed;
+                            person.RecordTypeValueId = DefinedValueCache.Get( Rock.SystemGuid.DefinedValue.PERSON_RECORD_TYPE_PERSON.AsGuid() ).Id;
+                            if ( dvcConnectionStatus != null )
+                            {
+                                person.ConnectionStatusValueId = dvcConnectionStatus.Id;
+                            }
+
+                            if ( dvcRecordStatus != null )
+                            {
+                                person.RecordStatusValueId = dvcRecordStatus.Id;
+                            }
                         }
                     }
 
