@@ -85,6 +85,8 @@
     <Folder Include="Build\" />
     <Folder Include="Framework\ViewModels\" />
     <Folder Include="Framework\ViewModels\Blocks\" />
+    <Folder Include="Framework\ViewModels\Blocks\CMS\" />
+    <Folder Include="Framework\ViewModels\Blocks\CMS\MediaFolderDetail\" />
     <Folder Include="Framework\ViewModels\Blocks\Core\" />
     <Folder Include="Framework\ViewModels\Blocks\Core\CampusDetail\" />
     <Folder Include="Framework\ViewModels\Blocks\CRM\" />
@@ -369,6 +371,8 @@
     <TypeScriptCompile Include="Framework\Utility\util.ts" />
     <TypeScriptCompile Include="Framework\Core\Reporting\comparisonType.ts" />
     <TypeScriptCompile Include="Framework\Core\Reporting\filterExpressionType.d.ts" />
+    <TypeScriptCompile Include="Framework\ViewModels\Blocks\CMS\MediaFolderDetail\mediaFolderBag.d.ts" />
+    <TypeScriptCompile Include="Framework\ViewModels\Blocks\CMS\MediaFolderDetail\mediaFolderDetailOptionsBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Blocks\Core\CampusDetail\campusBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Blocks\Core\CampusDetail\campusDetailOptionsBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Blocks\Core\CampusDetail\campusScheduleBag.d.ts" />
@@ -551,6 +555,7 @@
     <TypeScriptCompile Include="Framework\ViewModels\Entities\pageRouteBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\pageShortLinkBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\personalDeviceBag.d.ts" />
+    <TypeScriptCompile Include="Framework\ViewModels\Entities\personalizationSegmentBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\personalLinkBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\personalLinkSectionBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\personalLinkSectionOrderBag.d.ts" />
@@ -579,10 +584,12 @@
     <TypeScriptCompile Include="Framework\ViewModels\Entities\remoteAuthenticationSessionBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\reportBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\reportFieldBag.d.ts" />
+    <TypeScriptCompile Include="Framework\ViewModels\Entities\requestFilterBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\restActionBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\restControllerBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\scheduleBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\scheduleCategoryExclusionBag.d.ts" />
+    <TypeScriptCompile Include="Framework\ViewModels\Entities\segmentBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\serviceJobBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\serviceJobHistoryBag.d.ts" />
     <TypeScriptCompile Include="Framework\ViewModels\Entities\serviceLogBag.d.ts" />
