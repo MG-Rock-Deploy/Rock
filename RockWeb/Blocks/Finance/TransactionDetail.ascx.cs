@@ -386,18 +386,10 @@ namespace RockWeb.Blocks.Finance
 
             if ( isValid && savedTransactionId.HasValue )
             {
-                // Requery the batch to support EF navigation properties
-                var savedTxn = GetTransaction( savedTransactionId.Value );
-                if ( savedTxn != null )
-                {
-                    savedTxn.LoadAttributes();
-                    if ( savedTxn.FinancialPaymentDetail != null )
-                    {
-                        savedTxn.FinancialPaymentDetail.LoadAttributes();
-                    }
-
-                    ShowReadOnlyDetails( savedTxn );
-                }
+                // Reload the page with the newly created transaction's Id so we can display the details to the user.
+                var pageRef = new PageReference( CurrentPageReference.PageId, CurrentPageReference.RouteId );
+                pageRef.Parameters.Add( "TransactionId", savedTransactionId.ToString() );
+                NavigateToPage( pageRef );
             }
         }
 
