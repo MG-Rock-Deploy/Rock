@@ -70,15 +70,12 @@ export default defineComponent({
         const description = propertyRef(props.modelValue.description ?? "", "Description");
         const name = propertyRef(props.modelValue.name ?? "", "Name");
         const isContentChannelSyncEnabled = propertyRef(props.modelValue.isContentChannelSyncEnabled ?? false, "IsContentChannelSyncEnabled");
-        const contentChannel = propertyRef(props.modelValue.contentChannel ?? "", "ContentChannel");
+        const contentChannel = propertyRef(props.modelValue.contentChannel ?? {}, "ContentChannel");
         const contentChannelOptions = ref<ListItemBag[]>(props.options.contentChannels ?? []);
         const mediaFiles = ref<ListItemBag[]>(props.options.contentChannelAttributes ?? []);
-        const contentChannelAttribute = propertyRef(props.modelValue.contentChannelAttribute ?? "", "ContentChannelAttribute");
+        const contentChannelAttribute = propertyRef(props.modelValue.contentChannelAttribute ?? {}, "ContentChannelAttribute");
         const contentChannelStatus = propertyRef(props.modelValue.contentChannelStatus ?? "", "ContentChannelItemStatus");
 
-        console.log("contentChannel", contentChannel);
-        console.log("contentChannelAttribute ref", contentChannelAttribute);
-        console.log("contentChannelAttribute from model", props.modelValue.contentChannelAttribute);
         // The properties that are being edited. This should only contain
         // objects returned by propertyRef().
         const propRefs = [description, name];
@@ -96,7 +93,6 @@ export default defineComponent({
         // #region Event Handlers
 
         async function onUpdateValue(value) {
-            console.log(value);
             if (value) {
                 const response = await invokeBlockAction<GetMediaElementAttributesResponse>("UpdateMediaFileAttributeDropdowns", { channelGuid: value });
                 if (response.data && response.data.mediaElementAttributes) {
@@ -105,15 +101,8 @@ export default defineComponent({
                 else {
                     mediaFiles.value = [];
                 }
-            }
 
-            console.log(mediaFiles);
-        }
-
-        async function onContentAttributeUpdate(value) {
-            if (!value) {
-                contentChannelAttribute.value = props.modelValue.contentChannelAttribute?.value ?? "";
-                console.log(contentChannelAttribute);
+                console.log(contentChannel);
             }
         }
 
@@ -126,7 +115,8 @@ export default defineComponent({
             updateRefValue(description, props.modelValue.description ?? "");
             updateRefValue(name, props.modelValue.name ?? "");
             updateRefValue(isContentChannelSyncEnabled, props.modelValue.isContentChannelSyncEnabled ?? false);
-            updateRefValue(contentChannel, props.modelValue.contentChannel ?? "");
+            updateRefValue(contentChannel, props.modelValue.contentChannel ?? {});
+            updateRefValue(contentChannelAttribute, props.modelValue.contentChannelAttribute ?? {});
         });
 
         // Determines which values we want to track changes on (defined in the
@@ -138,7 +128,9 @@ export default defineComponent({
                 description: description.value,
                 name: name.value,
                 isContentChannelSyncEnabled: isContentChannelSyncEnabled.value,
-                // contentChannel: contentChannel.value
+                contentChannel: contentChannel.value,
+                contentChannelStatus: contentChannelStatus.value,
+                contentChannelAttribute: contentChannelAttribute.value
             };
 
             emit("update:modelValue", newValue);
@@ -164,8 +156,7 @@ export default defineComponent({
             mediaFiles,
             contentChannel,
             contentChannelAttribute,
-            contentChannelStatus,
-            onContentAttributeUpdate
+            contentChannelStatus
         };
     },
 
@@ -200,7 +191,6 @@ export default defineComponent({
                         <DropDownList v-model="contentChannelAttribute.value"
                                       label="Media File Attribute"                                     
                                       :items="mediaFiles"
-                                      @update:modelValue="onContentAttributeUpdate"
                                       rules="required" />
                     </div>
                     <div class="col-md-6">

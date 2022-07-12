@@ -212,6 +212,8 @@ export default defineComponent({
                 validProperties: validProperties
             };
 
+            console.log(data);
+
             const result = await invokeBlockAction<MediaFolderBag | string>("Save", {
                 box: data
             });
