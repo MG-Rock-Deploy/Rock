@@ -105,6 +105,7 @@ import InteractionChannelPicker from "@Obsidian/Controls/interactionChannelPicke
 import InteractionComponentPicker from "@Obsidian/Controls/interactionComponentPicker";
 import LavaCommandPicker from "@Obsidian/Controls/lavaCommandPicker";
 import RemoteAuthsPicker from "@Obsidian/Controls/remoteAuthsPicker";
+import StepProgramPicker from "@Obsidian/Controls/stepProgramPicker";
 
 // #region Gallery Support
 
@@ -4076,6 +4077,69 @@ const remoteAuthsPickerGallery = defineComponent({
 </GalleryAndResult>`
 });
 
+/** Demonstrates Step Program Picker */
+const stepProgramPickerGallery = defineComponent({
+    name: "StepProgramPickerGallery",
+    components: {
+        GalleryAndResult,
+        CheckBox,
+        DropDownList,
+        StepProgramPicker,
+        NumberUpDown,
+        TextBox,
+        NumberBox
+    },
+    setup() {
+        return {
+            columnCount: ref(0),
+            displayStyle: ref(PickerDisplayStyle.Auto),
+            displayStyleItems,
+            enhanceForLongLists: ref(false),
+            multiple: ref(false),
+            showBlankItem: ref(false),
+            value: ref({}),
+            importCode: getControlImportPath("stepProgramPicker"),
+            exampleCode: `<StepProgramPicker label="Step Program" v-model="value" />`
+        };
+    },
+    template: `
+<GalleryAndResult
+    :value="value"
+    :importCode="importCode"
+    :exampleCode="exampleCode"
+    enableReflection
+>
+    <StepProgramPicker label="Step Program"
+        v-model="value"
+        :multiple="multiple"
+        :columnCount="columnCount"
+        :enhanceForLongLists="enhanceForLongLists"
+        :displayStyle="displayStyle"
+        :showBlankItem="showBlankItem" />
+    <template #settings>
+        <div class="row">
+            <div class="col-md-4">
+                <CheckBox label="Multiple" v-model="multiple" />
+            </div>
+            <div class="col-md-4">
+                <CheckBox label="Enhance For Long Lists" v-model="enhanceForLongLists" />
+            </div>
+            <div class="col-md-4">
+                <CheckBox label="Show Blank Item" v-model="showBlankItem" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <DropDownList label="Display Style" :showBlankItem="false" v-model="displayStyle" :items="displayStyleItems" />
+            </div>
+            <div class="col-md-4">
+                <NumberUpDown label="Column Count" v-model="columnCount" :min="0" />
+            </div>
+        </div>
+    </template>
+</GalleryAndResult>`
+});
+
 
 const controlGalleryComponents: Record<string, Component> = [
     attributeValuesContainerGallery,
@@ -4148,6 +4212,7 @@ const controlGalleryComponents: Record<string, Component> = [
     interactionComponentPickerGallery,
     lavaCommandPickerGallery,
     remoteAuthsPickerGallery,
+    stepProgramPickerGallery,
 ]
     // Sort list by component name
     .sort((a, b) => a.name.localeCompare(b.name))

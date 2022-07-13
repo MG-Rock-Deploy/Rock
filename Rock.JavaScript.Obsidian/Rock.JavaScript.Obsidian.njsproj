@@ -141,6 +141,8 @@
     <TypeScriptCompile Include="Framework\Controls\interactionChannelPicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\keyValueList.ts" />
     <TypeScriptCompile Include="Framework\Controls\locationPicker.ts" />
+    <TypeScriptCompile Include="Framework\Controls\stepProgramPicker.ts" />
+    <TypeScriptCompile Include="Framework\Controls\remoteAuthsPicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\rockSuspense.ts" />
     <TypeScriptCompile Include="Framework\Controls\sectionContainer.ts" />
     <TypeScriptCompile Include="Framework\Controls\addressControl.ts" />

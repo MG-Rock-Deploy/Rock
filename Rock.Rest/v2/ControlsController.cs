@@ -1710,6 +1710,40 @@ namespace Rock.Rest.v2
 
         #endregion
 
+        #region Step Program Picker
+
+        /// <summary>
+        /// Gets the step programs that match the options sent in the request body.
+        /// This endpoint returns items formatted for use in a basic picker control.
+        /// </summary>
+        /// <param name="options">The options that describe which step programs to load.</param>
+        /// <returns>A collection of view models that represent the step programs.</returns>
+        [HttpPost]
+        [System.Web.Http.Route( "StepProgramPickerGetStepPrograms" )]
+        [Authenticate]
+        [Rock.SystemGuid.RestActionGuid( "6C7816B0-D41D-4081-B998-0B42B542111F" )]
+        public IHttpActionResult StepProgramPickerGetStepPrograms()
+        {
+            var items = new List<ListItemBag>();
+
+            var stepProgramService = new StepProgramService( new RockContext() );
+            var stepPrograms = stepProgramService.Queryable().AsNoTracking()
+                .Where( sp => sp.IsActive )
+                .OrderBy( sp => sp.Order )
+                .ThenBy( sp => sp.Name )
+                .ToList();
+
+            foreach ( var stepProgram in stepPrograms )
+            {
+                var li = new ListItemBag { Text = stepProgram.Name, Value = stepProgram.Id.ToString() };
+                items.Add( li );
+            }
+
+            return Ok( items );
+        }
+
+        #endregion
+
         #region Workflow Type Picker
 
         /// <summary>
