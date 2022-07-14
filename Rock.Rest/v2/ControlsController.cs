@@ -1347,7 +1347,7 @@ namespace Rock.Rest.v2
         [System.Web.Http.Route( "InteractionComponentPickerGetInteractionComponents" )]
         [Authenticate]
         [Rock.SystemGuid.RestActionGuid( "BD61A390-39F9-4FDE-B9AD-02E53B5F2073" )]
-        public IHttpActionResult InteractionComponentPickerGetInteractionComponents( InteractionComponentPickerGetInteractionComponentsOptionsBag options)
+        public IHttpActionResult InteractionComponentPickerGetInteractionComponents( [FromBody] InteractionComponentPickerGetInteractionComponentsOptionsBag options)
         {
 
             if ( !options.InteractionChannelId.HasValue )
@@ -1736,6 +1736,47 @@ namespace Rock.Rest.v2
             foreach ( var stepProgram in stepPrograms )
             {
                 var li = new ListItemBag { Text = stepProgram.Name, Value = stepProgram.Id.ToString() };
+                items.Add( li );
+            }
+
+            return Ok( items );
+        }
+
+        #endregion
+
+        #region Step Status Picker
+
+        /// <summary>
+        /// Gets the step statuses that match the options sent in the request body.
+        /// This endpoint returns items formatted for use in a basic picker control.
+        /// </summary>
+        /// <param name="options">The options that describe which step statuses to load.</param>
+        /// <returns>A collection of view models that represent the step statuses.</returns>
+        [HttpPost]
+        [System.Web.Http.Route( "StepStatusPickerGetStepStatuses" )]
+        [Authenticate]
+        [Rock.SystemGuid.RestActionGuid( "5B4E7419-266C-4235-93B7-8D0DE0E80D2B" )]
+        public IHttpActionResult StepStatusPickerGetStepStatuses( [FromBody] StepStatusPickerGetStepStatusesOptionsBag options )
+        {
+            var items = new List<ListItemBag>();
+
+            if ( !options.StepProgramId.HasValue )
+            {
+                return NotFound();
+            }
+
+            var stepStatusService = new StepStatusService( new RockContext() );
+            var statuses = stepStatusService.Queryable().AsNoTracking()
+                .Where( ss =>
+                    ss.StepProgramId == options.StepProgramId.Value &&
+                    ss.IsActive )
+                .OrderBy( ss => ss.Order )
+                .ThenBy( ss => ss.Name )
+                .ToList();
+
+            foreach ( var status in statuses )
+            {
+                var li = new ListItemBag { Text = status.Name, Value = status.Id.ToString() };
                 items.Add( li );
             }
 
