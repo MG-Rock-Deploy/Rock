@@ -204,7 +204,7 @@ namespace Rock.Blocks.CMS
                 SourceData = entity.SourceData,
                 SourceKey = entity.SourceKey,
                 WorkflowType = entity.WorkflowType.ToListItemBag(),
-                ContentChannelStatus = entity.ContentChannelItemStatus.ToString()
+                ContentChannelStatus = entity.ContentChannelItemStatus.ConvertToString()
             };
         }
 
@@ -270,6 +270,9 @@ namespace Rock.Blocks.CMS
 
             box.IfValidProperty( nameof( box.Entity.ContentChannel ),
                 () => entity.ContentChannelId = box.Entity.ContentChannel.GetEntityId<ContentChannel>( rockContext ) );
+
+            box.IfValidProperty( nameof( box.Entity.ContentChannelStatus ),
+                () => entity.ContentChannelItemStatus = box.Entity.ContentChannelStatus.ConvertToEnumOrNull<ContentChannelItemStatus>());
 
             box.IfValidProperty( nameof( box.Entity.Description ),
                 () => entity.Description = box.Entity.Description );

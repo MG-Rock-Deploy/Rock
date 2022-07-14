@@ -23,6 +23,7 @@ import Switch from "@Obsidian/Controls/switch";
 import DropDownList from "@Obsidian/Controls/dropDownList";
 import RadioButtonList from "@Obsidian/Controls/radioButtonList";
 import TransitionVerticalCollapse from "@Obsidian/Controls/transitionVerticalCollapse";
+import WorkflowTypePicker from "@Obsidian/Controls/workflowTypePicker";
 import { propertyRef, updateRefValue } from "@Obsidian/Utility/component";
 import { MediaFolderBag } from "@Obsidian/ViewModels/Blocks/CMS/MediaFolderDetail/mediaFolderBag";
 import { MediaFolderDetailOptionsBag } from "@Obsidian/ViewModels/Blocks/CMS/MediaFolderDetail/mediaFolderDetailOptionsBag";
@@ -53,7 +54,8 @@ export default defineComponent({
         Switch,
         TransitionVerticalCollapse,
         DropDownList,
-        RadioButtonList
+        RadioButtonList,
+        WorkflowTypePicker
     },
 
     emits: {
@@ -75,6 +77,7 @@ export default defineComponent({
         const mediaFiles = ref<ListItemBag[]>(props.options.contentChannelAttributes ?? []);
         const contentChannelAttribute = propertyRef(props.modelValue.contentChannelAttribute ?? {}, "ContentChannelAttribute");
         const contentChannelStatus = propertyRef(props.modelValue.contentChannelStatus ?? "", "ContentChannelItemStatus");
+        const workflowType = propertyRef(props.modelValue.workflowType ?? {}, "WorkflowType");
 
         // The properties that are being edited. This should only contain
         // objects returned by propertyRef().
@@ -117,11 +120,13 @@ export default defineComponent({
             updateRefValue(isContentChannelSyncEnabled, props.modelValue.isContentChannelSyncEnabled ?? false);
             updateRefValue(contentChannel, props.modelValue.contentChannel ?? {});
             updateRefValue(contentChannelAttribute, props.modelValue.contentChannelAttribute ?? {});
+            updateRefValue(contentChannelStatus, props.modelValue.contentChannelStatus ?? "");
+            updateRefValue(workflowType, props.modelValue.workflowType ?? {});
         });
 
         // Determines which values we want to track changes on (defined in the
         // array) and then emit a new object defined as newValue.
-        watch([attributeValues, ...propRefs], () => {
+        watch([attributeValues, description, name, isContentChannelSyncEnabled, contentChannel, contentChannelStatus, contentChannelAttribute, workflowType, ...propRefs], () => {
             const newValue: MediaFolderBag = {
                 ...props.modelValue,
                 attributeValues: attributeValues.value,
@@ -130,7 +135,8 @@ export default defineComponent({
                 isContentChannelSyncEnabled: isContentChannelSyncEnabled.value,
                 contentChannel: contentChannel.value,
                 contentChannelStatus: contentChannelStatus.value,
-                contentChannelAttribute: contentChannelAttribute.value
+                contentChannelAttribute: contentChannelAttribute.value,
+                workflowType: workflowType.value
             };
 
             emit("update:modelValue", newValue);
@@ -148,7 +154,7 @@ export default defineComponent({
             isContentChannelSyncEnabled,
             onUpdateValue,
             channelStatuses: [
-                { text: "Pending Approval", value: "PendingApproval" },
+                { text: "Pending Approval", value: "Pending Approval" },
                 { text: "Approved", value: "Approved" },
                 { text: "Denied", value: "Denied" }
             ] as ListItemBag[],
@@ -156,7 +162,8 @@ export default defineComponent({
             mediaFiles,
             contentChannel,
             contentChannelAttribute,
-            contentChannelStatus
+            contentChannelStatus,
+            workflowType
         };
     },
 
@@ -174,6 +181,9 @@ export default defineComponent({
     <TextBox v-model="description"
         label="Description"
         textMode="multiline" />
+
+    <WorkflowTypePicker v-model="workflowType"
+        label="WorkFlow" />
 
     <div class="mt-3">
         <div class="mb-3 galleryContent-reflectionToggle">

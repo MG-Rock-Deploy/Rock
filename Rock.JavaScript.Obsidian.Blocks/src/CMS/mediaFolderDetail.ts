@@ -70,6 +70,8 @@ export default defineComponent({
             "name",
             "sourceData",
             "sourceKey",
+            "workflowType",
+            "contentChannelStatus",
             "workflowType"
         ];
 
@@ -285,10 +287,10 @@ export default defineComponent({
     :entityTypeGuid="entityTypeGuid"
     entityTypeName="MediaFolder"
     :isAuditHidden="false"
-    :isBadgesVisible="true"
+    :isBadgesVisible="false"
     :isDeleteVisible="isEditable"
     :isEditVisible="isEditable"
-    :isFollowVisible="true"
+    :isFollowVisible="false"
     :isSecurityHidden="false"
     @cancelEdit="onCancelEdit"
     @delete="onDelete"

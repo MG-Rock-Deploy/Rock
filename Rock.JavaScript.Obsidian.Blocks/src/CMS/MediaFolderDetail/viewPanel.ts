@@ -89,7 +89,7 @@ export default defineComponent({
             }
 
             if (props.modelValue.contentChannelStatus) {
-                valueBuilder.addTextValue("Content Channel Attribute", props.modelValue.contentChannelStatus ?? "");
+                valueBuilder.addTextValue("Content Channel Item Status", props.modelValue.contentChannelStatus ?? "");
             }
 
             return valueBuilder.build();
