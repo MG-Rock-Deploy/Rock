@@ -16,13 +16,13 @@
 //
 import { standardAsyncPickerProps, useStandardAsyncPickerProps, useVModelPassthrough } from "@Obsidian/Utility/component";
 import { post } from "@Obsidian/Utility/http";
-import { StepStatusPickerGetStepStatusesOptionsBag } from "@Obsidian/ViewModels/Rest/Controls/stepStatusPickerGetStepStatusesOptionsBag";
+import { StepTypePickerGetStepTypesOptionsBag } from "@Obsidian/ViewModels/Rest/Controls/stepTypePickerGetStepTypesOptionsBag";
 import { ListItemBag } from "@Obsidian/ViewModels/Utility/listItemBag";
 import { computed, defineComponent, PropType, ref, watch } from "vue";
 import BaseAsyncPicker from "./baseAsyncPicker";
 
 export default defineComponent({
-    name: "StepStatusPicker",
+    name: "StepTypePicker",
 
     components: {
         BaseAsyncPicker
@@ -73,10 +73,10 @@ export default defineComponent({
          * Loads the items from the server.
          */
         const loadOptions = async (): Promise<ListItemBag[]> => {
-            const options: Partial<StepStatusPickerGetStepStatusesOptionsBag> = {
+            const options: Partial<StepTypePickerGetStepTypesOptionsBag> = {
                 stepProgramId: props.stepProgramId
             };
-            const result = await post<ListItemBag[]>("/api/v2/Controls/StepStatusPickerGetStepStatuses", undefined, options);
+            const result = await post<ListItemBag[]>("/api/v2/Controls/StepTypePickerGetStepTypes", undefined, options);
 
             if (result.isSuccess && result.data) {
                 loadedItems.value = result.data;

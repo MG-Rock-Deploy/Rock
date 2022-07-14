@@ -1785,6 +1785,47 @@ namespace Rock.Rest.v2
 
         #endregion
 
+        #region Step Type Picker
+
+        /// <summary>
+        /// Gets the step types that match the options sent in the request body.
+        /// This endpoint returns items formatted for use in a basic picker control.
+        /// </summary>
+        /// <param name="options">The options that describe which step types to load.</param>
+        /// <returns>A collection of view models that represent the step types.</returns>
+        [HttpPost]
+        [System.Web.Http.Route( "StepTypePickerGetStepTypes" )]
+        [Authenticate]
+        [Rock.SystemGuid.RestActionGuid( "9BC4C3BA-573E-4FB4-A4FC-938D40BED2BE" )]
+        public IHttpActionResult StepTypePickerGetStepTypes( [FromBody] StepTypePickerGetStepTypesOptionsBag options )
+        {
+            var items = new List<ListItemBag>();
+
+            if ( !options.StepProgramId.HasValue )
+            {
+                return NotFound();
+            }
+
+            var stepTypeService = new StepTypeService( new RockContext() );
+            var stepTypes = stepTypeService.Queryable().AsNoTracking()
+                .Where( st =>
+                    st.StepProgramId == options.StepProgramId.Value &&
+                    st.IsActive )
+                .OrderBy( st => st.Order )
+                .ThenBy( st => st.Name )
+                .ToList();
+
+            foreach ( var stepType in stepTypes )
+            {
+                var li = new ListItemBag { Text = stepType.Name, Value = stepType.Id.ToString() };
+                items.Add( li );
+            }
+
+            return Ok( items );
+        }
+
+        #endregion
+
         #region Workflow Type Picker
 
         /// <summary>

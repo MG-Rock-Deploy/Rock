@@ -20,13 +20,13 @@ using System;
 namespace Rock.ViewModels.Rest.Controls
 {
     /// <summary>
-    /// The options that can be passed to the GetStepStatuses API action of
-    /// the StepStatusPicker control.
+    /// The options that can be passed to the GetStepTypes API action of
+    /// the StepTypePicker control.
     /// </summary>
-    public class StepStatusPickerGetStepStatusesOptionsBag
+    public class StepTypePickerGetStepTypesOptionsBag
     {
         /// <summary>
-        /// The ID of the step status that this step status is part of.
+        /// The ID of the step program that this step type is part of.
         /// </summary>
         public int? StepProgramId { get; set; }
     }
