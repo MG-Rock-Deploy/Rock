@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright by the Spark Development Network
 //
 // Licensed under the Rock Community License (the "License");
@@ -64,7 +64,7 @@ namespace Rock.Model
 
         /// <summary>
         /// Gets or sets the file name portion of the associated .Net ASCX UserControl that provides the HTML Markup and code for this Layout.
-        /// Value should not include the extension.  And the path is relative to the theme folder.
+        /// The value should not include the extension. And the path is relative to the theme folder.
         /// </summary>
         /// <value>
         /// A <see cref="System.String"/> that represents the relative path to the supporting UserControl for the Layout.
