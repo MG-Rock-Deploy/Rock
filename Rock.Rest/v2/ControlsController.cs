@@ -1861,6 +1861,38 @@ namespace Rock.Rest.v2
 
         #endregion
 
+        #region Streak Type Picker
+
+        /// <summary>
+        /// Gets the streak types that match the options sent in the request body.
+        /// This endpoint returns items formatted for use in a basic picker control.
+        /// </summary>
+        /// <returns>A collection of view models that represent the streak types.</returns>
+        [HttpPost]
+        [System.Web.Http.Route( "StreakTypePickerGetStreakTypes" )]
+        [Authenticate]
+        [Rock.SystemGuid.RestActionGuid( "78D0A6D1-317E-4CB7-98BB-AF9194AD3C94" )]
+        public IHttpActionResult StreakTypePickerGetStreakTypes()
+        {
+            var items = new List<ListItemBag>();
+
+            var streakTypes = StreakTypeCache.All()
+                .Where( st => st.IsActive )
+                .OrderBy( st => st.Name )
+                .ThenBy( st => st.Id )
+                .ToList();
+
+            foreach ( var streakType in streakTypes )
+            {
+                var li = new ListItemBag { Text = streakType.Name, Value = streakType.Guid.ToString() };
+                items.Add( li );
+            }
+
+            return Ok( items );
+        }
+
+        #endregion
+
         #region Workflow Type Picker
 
         /// <summary>

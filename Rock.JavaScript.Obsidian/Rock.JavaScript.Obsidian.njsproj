@@ -135,6 +135,7 @@
     <TypeScriptCompile Include="Framework\Controls\financialStatementTemplatePicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\following.ts" />
     <TypeScriptCompile Include="Framework\Controls\gradePicker.ts" />
+    <TypeScriptCompile Include="Framework\Controls\streakTypePicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\stepTypePicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\stepStatusPicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\lavaCommandPicker.ts" />
