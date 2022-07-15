@@ -14,6 +14,7 @@
 // limitations under the License.
 // </copyright>
 //
+import { Guid } from "@Obsidian/Types";
 import { standardAsyncPickerProps, useStandardAsyncPickerProps, useVModelPassthrough } from "@Obsidian/Utility/component";
 import { post } from "@Obsidian/Utility/http";
 import { StepStatusPickerGetStepStatusesOptionsBag } from "@Obsidian/ViewModels/Rest/Controls/stepStatusPickerGetStepStatusesOptionsBag";
@@ -36,6 +37,11 @@ export default defineComponent({
 
         stepProgramId: {
             type: Number as PropType<number>,
+            default: null
+        },
+
+        stepProgramGuid: {
+            type: String as PropType<Guid>,
             default: null
         },
 
@@ -74,7 +80,8 @@ export default defineComponent({
          */
         const loadOptions = async (): Promise<ListItemBag[]> => {
             const options: Partial<StepStatusPickerGetStepStatusesOptionsBag> = {
-                stepProgramId: props.stepProgramId
+                stepProgramId: props.stepProgramId,
+                stepProgramGuid: props.stepProgramGuid
             };
             const result = await post<ListItemBag[]>("/api/v2/Controls/StepStatusPickerGetStepStatuses", undefined, options);
 
@@ -93,7 +100,7 @@ export default defineComponent({
 
         // #region Watchers
 
-        watch(() => [props.stepProgramId], () => {
+        watch(() => [props.stepProgramId, props.stepProgramGuid], () => {
             loadedItems.value = null;
         });
 

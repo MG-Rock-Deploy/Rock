@@ -14,6 +14,7 @@
 // limitations under the License.
 // </copyright>
 //
+import { Guid } from "@Obsidian/Types";
 import { standardAsyncPickerProps, useStandardAsyncPickerProps, useVModelPassthrough } from "@Obsidian/Utility/component";
 import { post } from "@Obsidian/Utility/http";
 import { GroupMemberPickerGetGroupMembersOptionsBag } from "@Obsidian/ViewModels/Rest/Controls/groupMemberPickerGetGroupMembersOptionsBag";
@@ -36,6 +37,11 @@ export default defineComponent({
 
         groupId: {
             type: Number as PropType<number>,
+            default: null
+        },
+
+        groupGuid: {
+            type: String as PropType<Guid>,
             default: null
         },
 
@@ -74,7 +80,8 @@ export default defineComponent({
          */
         const loadOptions = async (): Promise<ListItemBag[]> => {
             const options: Partial<GroupMemberPickerGetGroupMembersOptionsBag> = {
-                groupId: props.groupId
+                groupId: props.groupId,
+                groupGuid: props.groupGuid
             };
             const result = await post<ListItemBag[]>("/api/v2/Controls/GroupMemberPickerGetGroupMembers", undefined, options);
 

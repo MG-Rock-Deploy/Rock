@@ -3902,13 +3902,13 @@ const interactionComponentPickerGallery = defineComponent({
             columnCount: ref(0),
             displayStyle: ref(PickerDisplayStyle.Auto),
             displayStyleItems,
-            interactionChannelId: ref(null),
+            interactionChannelGuid: ref(null),
             enhanceForLongLists: ref(false),
             multiple: ref(false),
             showBlankItem: ref(false),
             value: ref({}),
             importCode: getControlImportPath("interactionComponentPicker"),
-            exampleCode: `<InteractionComponentPicker label="Interaction Component" v-model="value" :interactionChannelId="interactionChannelId" />`
+            exampleCode: `<InteractionComponentPicker label="Interaction Component" v-model="value" :interactionChannelGuid="interactionChannelGuid" />`
         };
     },
     template: `
@@ -3925,7 +3925,7 @@ const interactionComponentPickerGallery = defineComponent({
         :enhanceForLongLists="enhanceForLongLists"
         :displayStyle="displayStyle"
         :showBlankItem="showBlankItem"
-        :interactionChannelId="interactionChannelId?.value" />
+        :interactionChannelGuid="interactionChannelGuid?.value" />
     <template #settings>
         <div class="row">
             <div class="col-md-4">
@@ -3946,7 +3946,7 @@ const interactionComponentPickerGallery = defineComponent({
                 <NumberUpDown label="Column Count" v-model="columnCount" :min="0" />
             </div>
             <div class="col-md-4">
-                <InteractionChannelPicker label="Interaction Channel" v-model="interactionChannelId" />
+                <InteractionChannelPicker label="Interaction Channel" v-model="interactionChannelGuid" />
             </div>
         </div>
     </template>
@@ -4163,7 +4163,7 @@ const stepStatusPickerGallery = defineComponent({
             enhanceForLongLists: ref(false),
             multiple: ref(false),
             showBlankItem: ref(false),
-            stepProgramId: ref(null),
+            stepProgramGuid: ref(null),
             value: ref({}),
             importCode: getControlImportPath("stepStatusPicker"),
             exampleCode: `<StepStatusPicker label="Step Status" v-model="value" />`
@@ -4183,7 +4183,7 @@ const stepStatusPickerGallery = defineComponent({
         :enhanceForLongLists="enhanceForLongLists"
         :displayStyle="displayStyle"
         :showBlankItem="showBlankItem"
-        :stepProgramId="stepProgramId?.value" />
+        :stepProgramGuid="stepProgramGuid?.value" />
     <template #settings>
         <div class="row">
             <div class="col-md-4">
@@ -4204,7 +4204,7 @@ const stepStatusPickerGallery = defineComponent({
                 <NumberUpDown label="Column Count" v-model="columnCount" :min="0" />
             </div>
             <div class="col-md-4">
-                <StepProgramPicker label="Step Program" v-model="stepProgramId" />
+                <StepProgramPicker label="Step Program" v-model="stepProgramGuid" />
             </div>
         </div>
     </template>
@@ -4232,7 +4232,7 @@ const stepTypePickerGallery = defineComponent({
             enhanceForLongLists: ref(false),
             multiple: ref(false),
             showBlankItem: ref(false),
-            stepProgramId: ref(null),
+            stepProgramGuid: ref(null),
             value: ref({}),
             importCode: getControlImportPath("stepTypePicker"),
             exampleCode: `<StepTypePicker label="Step Type" v-model="value" />`
@@ -4252,7 +4252,7 @@ const stepTypePickerGallery = defineComponent({
         :enhanceForLongLists="enhanceForLongLists"
         :displayStyle="displayStyle"
         :showBlankItem="showBlankItem"
-        :stepProgramId="stepProgramId?.value" />
+        :stepProgramGuid="stepProgramGuid?.value" />
     <template #settings>
         <div class="row">
             <div class="col-md-4">
@@ -4273,7 +4273,7 @@ const stepTypePickerGallery = defineComponent({
                 <NumberUpDown label="Column Count" v-model="columnCount" :min="0" />
             </div>
             <div class="col-md-4">
-                <StepProgramPicker label="Step Program" v-model="stepProgramId" />
+                <StepProgramPicker label="Step Program" v-model="stepProgramGuid" />
             </div>
         </div>
     </template>
