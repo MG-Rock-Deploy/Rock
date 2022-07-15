@@ -42,16 +42,7 @@ namespace Rock.Plugin.HotFixes
 
         private void FixIncorrectERAStartDate()
         {
-            Sql( @"
-DECLARE @eraStartDateAttributeId INT = (
-        SELECT TOP 1 Id
-        FROM Attribute
-        WHERE [Guid] = 'a106610c-a7a1-469e-4097-9de6400fdfc2'
-        )
-
-UPDATE AttributeValue
-SET [Value] = CONVERT(NVARCHAR(MAX), isnull(ModifiedDateTime, CreatedDateTime), 127)
-WHERE AttributeId = @eraStartDateAttributeId" );
+            Sql( HotFixMigrationResource._153_FixERAStartDate_RecoverERAStartDate_Update );
         }
 
         private void Update_spCrm_FamilyAnalyticsEraDataset()

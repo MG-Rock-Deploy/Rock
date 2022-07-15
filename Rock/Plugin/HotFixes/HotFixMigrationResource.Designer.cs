@@ -367,7 +367,7 @@ namespace Rock.Plugin.HotFixes {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///
+        ////*
         ///&lt;doc&gt;
         /// &lt;summary&gt;
         ///   This stored procedure detects potential duplicate person records and stores the results in [PersonDuplicate]
@@ -434,8 +434,7 @@ namespace Rock.Plugin.HotFixes {
         ///    BEGIN
         ///	
         ///	    -- configuration of the duration in weeks
-        ///	    DECLARE @GivingDurationLongWeeks int = 52
-        /// [rest of string was truncated]&quot;;.
+        ///	    DECLARE @GivingDurationLongWeeks int = 52        /// [rest of string was truncated]&quot;;.
         /// </summary>
         public static string _052_MigrationRollupsForV8_1_spCrm_FamilyAnalyticsGiving {
             get {
@@ -794,6 +793,20 @@ namespace Rock.Plugin.HotFixes {
         public static string _134_AddDocumentsToPersonMerge_spCrm_PersonMerge {
             get {
                 return ResourceManager.GetString("_134_AddDocumentsToPersonMerge_spCrm_PersonMerge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to -- Recover using History table
+        ///-- When a person enters era, the ERA Start Date attribute is set with current date time
+        ///-- then a History table gets &apos;ENTERED&apos; with a CreateDateTime of the ERA Start Date.
+        ///-- So we can recover the ERA Start Date by looking for when the most recent time that ENTERED history record was logged.
+        ///-- In the unlikely case there wasn&apos;t a ENTERED history record, but they have a Era StartDate, we can recover using the AttributeValue.CreatedDateTime.
+        ///-- That edge case would be for d [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string _153_FixERAStartDate_RecoverERAStartDate_Update {
+            get {
+                return ResourceManager.GetString("_153_FixERAStartDate_RecoverERAStartDate_Update", resourceCulture);
             }
         }
         
