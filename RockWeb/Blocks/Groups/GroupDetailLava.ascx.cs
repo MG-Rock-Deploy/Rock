@@ -358,10 +358,8 @@ namespace RockWeb.Blocks.Groups
             if ( IsEditingGroup == true )
             {
                 Group group = new GroupService( new RockContext() ).Get( _groupId );
-                group.LoadAttributes();
 
-                phAttributes.Controls.Clear();
-                Rock.Attribute.Helper.AddEditControls( group, phAttributes, false, BlockValidationGroup );
+                InitializeGroupAttributeControls( group, false );
             }
 
             if ( IsEditingGroupMember == true )
@@ -380,10 +378,7 @@ namespace RockWeb.Blocks.Groups
                     groupMember.GroupMemberStatus = GroupMemberStatus.Active;
                 }
 
-                // set attributes
-                groupMember.LoadAttributes();
-                phGroupMemberAttributes.Controls.Clear();
-                Rock.Attribute.Helper.AddEditControls( groupMember, phGroupMemberAttributes, true, string.Empty, true );
+                InitializeGroupMemberAttributeControls( groupMember );
             }
         }
 
@@ -1041,9 +1036,7 @@ namespace RockWeb.Blocks.Groups
                         nbGroupCapacity.Visible = group.GroupType.GroupCapacityRule != GroupCapacityRule.None;
                     }
 
-                    group.LoadAttributes();
-                    phAttributes.Controls.Clear();
-                    Rock.Attribute.Helper.AddEditControls( group, phAttributes, true, BlockValidationGroup );
+                    InitializeGroupAttributeControls( group, true );
 
                     // enable editing location
                     pnlGroupEditLocations.Visible = GetAttributeValue( AttributeKey.EnableLocationEdit ).AsBoolean();
@@ -1324,10 +1317,7 @@ namespace RockWeb.Blocks.Groups
                 pnlGroupMemberAttributes.AddCssClass( "col-md-6" ).RemoveCssClass( "col-md-12" );
             }
 
-            // set attributes
-            groupMember.LoadAttributes();
-            phGroupMemberAttributes.Controls.Clear();
-            Rock.Attribute.Helper.AddEditControls( groupMember, phGroupMemberAttributes, true, string.Empty, true );
+            InitializeGroupMemberAttributeControls( groupMember );
 
             this.IsEditingGroupMember = true;
         }
@@ -1450,6 +1440,46 @@ namespace RockWeb.Blocks.Groups
 
                 NavigateToLinkedPage( AttributeKey.AlternateCommunicationPage, queryParameters );
             }
+        }
+
+        private void InitializeGroupAttributeControls( Group group, bool setValue )
+        {
+            phAttributes.Controls.Clear();
+
+            if ( group == null )
+            {
+                return;
+            }
+            group.LoadAttributes();
+
+            // Show Attributes that are accessible to the current user.
+            Rock.Attribute.Helper.AddEditControlsForUser( this.CurrentPerson,
+                categoryName: null,
+                item: group,
+                parentControl: phAttributes,
+                validationGroup: this.BlockValidationGroup,
+                setValue: setValue,
+                addEditControlsOptions: null );
+        }
+
+        private void InitializeGroupMemberAttributeControls( GroupMember groupMember )
+        {
+            phGroupMemberAttributes.Controls.Clear();
+
+            if ( groupMember == null )
+            {
+                return;
+            }
+            groupMember.LoadAttributes();
+
+            // Show Attributes that are accessible to the current user.
+            Rock.Attribute.Helper.AddEditControlsForUser( this.CurrentPerson,
+                categoryName: null,
+                item: groupMember,
+                parentControl: phGroupMemberAttributes,
+                validationGroup: null,
+                setValue: true,
+                addEditControlsOptions: null );
         }
 
         #endregion

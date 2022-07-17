@@ -1384,6 +1384,66 @@ This can be due to multiple threads updating the same attribute at the same time
         }
 
         /// <summary>
+        /// Adds the edit controls for a specific user, showing only those Attributes for which the user has edit permission.
+        /// </summary>
+        /// <param name="user">The user requesting access to the attributes.</param>
+        /// <param name="categoryName">Name of the category. If not specified, all categories will be added.</param>
+        /// <param name="item">The item.</param>
+        /// <param name="parentControl">The parent control.</param>
+        /// <param name="validationGroup">The validation group.</param>
+        /// <param name="setValue">if set to <c>true</c> [set value].</param>
+        /// <param name="addEditControlsOptions">The add edit controls options.</param>
+        public static void AddEditControlsForUser( Person user, string categoryName, IHasAttributes item, Control parentControl, string validationGroup, bool setValue, AttributeAddEditControlsOptions addEditControlsOptions )
+        {
+            if ( user == null || item == null )
+            {
+                return;
+            }
+            if ( item.Attributes == null )
+            {
+                item.LoadAttributes();
+            }
+
+            // Get the set of attribute keys that are not available for edit, due to permission settings or specific exclusion.
+            var attributesForEdit = item.GetAuthorizedAttributes( "EDIT", user )
+                .Select( x => x.Value.Key )
+                .ToList();
+            var excludedKeys = item.Attributes.Keys
+                .Where( x => !attributesForEdit.Contains( x ) )
+                .ToList();
+            if ( addEditControlsOptions?.ExcludedAttributes != null )
+            {
+                excludedKeys = excludedKeys.Union( addEditControlsOptions.ExcludedAttributes.Select( x => x.Key ) ).ToList();
+            }
+
+            // Add the available Attribute edit controls by category.
+            var categories = GetAttributeCategories( item, false, false, false );
+            if ( categoryName != null )
+            {
+                categories = categories.Where( x => x.CategoryName == categoryName ).ToList();
+            }
+            foreach ( var attributeCategory in categories )
+            {
+                // Get the available attributes in this category.
+                var categoryAttributeKeys = attributeCategory.Attributes
+                    .Where( a => a.IsActive && !excludedKeys.Contains( a.Key ) )
+                    .Select( a => a.Key )
+                    .ToList();
+                if ( categoryAttributeKeys.Count > 0 )
+                {
+                    AddEditControls(
+                        attributeCategory.Category != null ? attributeCategory.Category.Name : string.Empty,
+                        categoryAttributeKeys,
+                        item, parentControl, validationGroup, setValue,
+                        exclude: excludedKeys,
+                        addEditControlsOptions?.NumberOfColumns );
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
         /// Gets the display HTML.
         /// </summary>
         /// <param name="item">The item.</param>
