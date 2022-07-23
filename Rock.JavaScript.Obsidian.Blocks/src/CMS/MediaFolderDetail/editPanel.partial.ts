@@ -23,18 +23,14 @@ import DropDownList from "@Obsidian/Controls/dropDownList";
 import RadioButtonList from "@Obsidian/Controls/radioButtonList";
 import TransitionVerticalCollapse from "@Obsidian/Controls/transitionVerticalCollapse";
 import WorkflowTypePicker from "@Obsidian/Controls/workflowTypePicker";
-import { useInvokeBlockAction, watchPropertyChanges } from "@Obsidian/Utility/block";
+import { watchPropertyChanges } from "@Obsidian/Utility/block";
 import { propertyRef, updateRefValue } from "@Obsidian/Utility/component";
-import { MediaFolderBag } from "@Obsidian/ViewModels/Blocks/CMS/MediaFolderDetail/mediaFolderBag";
-import { MediaFolderDetailOptionsBag } from "@Obsidian/ViewModels/Blocks/CMS/MediaFolderDetail/mediaFolderDetailOptionsBag";
+import { MediaFolderBag } from "@Obsidian/ViewModels/Blocks/Cms/MediaFolderDetail/mediaFolderBag";
+import { MediaFolderDetailOptionsBag } from "@Obsidian/ViewModels/Blocks/Cms/MediaFolderDetail/mediaFolderDetailOptionsBag";
 import { ListItemBag } from "@Obsidian/ViewModels/Utility/listItemBag";
 
-type GetMediaElementAttributesResponse = {
-    mediaElementAttributes: ListItemBag[]
-};
-
 export default defineComponent({
-    name: "CMS.MediaFolderDetail.EditPanel",
+    name: "Cms.MediaFolderDetail.EditPanel",
 
     props: {
         modelValue: {
@@ -66,23 +62,22 @@ export default defineComponent({
     setup(props, { emit }) {
         // #region Values
 
-        const invokeBlockAction = useInvokeBlockAction();
         const attributes = ref(props.modelValue.attributes ?? {});
         const attributeValues = ref(props.modelValue.attributeValues ?? {});
         const description = propertyRef(props.modelValue.description ?? "", "Description");
         const name = propertyRef(props.modelValue.name ?? "", "Name");
         const isContentChannelSyncEnabled = propertyRef(props.modelValue.isContentChannelSyncEnabled ?? false, "IsContentChannelSyncEnabled");
-        const contentChannel = propertyRef(props.modelValue.contentChannel ?? {}, "ContentChannel");
+        const contentChannelValue = propertyRef(props.modelValue.contentChannel?.value ?? "", "ContentChannelId");
         const contentChannelOptions = ref<ListItemBag[]>(props.options.contentChannels ?? []);
-        const mediaFiles = ref<ListItemBag[]>(props.modelValue.mediaElements ?? []);
-        const contentChannelAttribute = propertyRef(props.modelValue.contentChannelAttribute ?? {}, "ContentChannelAttribute");
+        const contentChannelAttributes = ref<Record<string, ListItemBag[]>>(props.options.contentChannelAttributes ?? {});
+        const contentChannelItemAttributes = ref<ListItemBag[]>(props.modelValue.contentChannelItemAttributes ?? []);
+        const contentChannelAttributeValue = propertyRef(props.modelValue.contentChannelAttribute?.value ?? "", "ContentChannelAttributeId");
         const contentChannelItemStatus = propertyRef(props.modelValue.contentChannelItemStatus ?? "", "ContentChannelItemStatus");
-        const workflowType = propertyRef(props.modelValue.workflowType ?? {}, "WorkflowType");
-        const mediaAccount = propertyRef(props.modelValue.mediaAccount ?? {}, "MediaAccount");
+        const workflowType = propertyRef(props.modelValue.workflowType ?? {}, "WorkflowTypeId");
 
         // The properties that are being edited. This should only contain
         // objects returned by propertyRef().
-        const propRefs = [description, name, isContentChannelSyncEnabled, contentChannel, contentChannelAttribute, contentChannelItemStatus, workflowType, mediaAccount];
+        const propRefs = [description, name, isContentChannelSyncEnabled, contentChannelValue, contentChannelAttributeValue, contentChannelItemStatus, workflowType];
 
         // #endregion
 
@@ -96,15 +91,10 @@ export default defineComponent({
 
         // #region Event Handlers
 
-        async function onUpdateValue(value) {
-            if (value) {
-                const response = await invokeBlockAction<GetMediaElementAttributesResponse>("UpdateMediaFileAttributeDropdowns", { channelGuid: value });
-                if (response.data && response.data.mediaElementAttributes) {
-                    mediaFiles.value = response.data.mediaElementAttributes;
-                }
-                else {
-                    mediaFiles.value = [];
-                }
+        async function onUpdateValue(contentChannel) {
+            if (contentChannel) {
+                const values = Array.from(contentChannelAttributes.value[contentChannel.value]);
+                contentChannelItemAttributes.value = values;
             }
         }
 
@@ -117,33 +107,33 @@ export default defineComponent({
             updateRefValue(description, props.modelValue.description ?? "");
             updateRefValue(name, props.modelValue.name ?? "");
             updateRefValue(isContentChannelSyncEnabled, props.modelValue.isContentChannelSyncEnabled ?? false);
-            updateRefValue(contentChannel, props.modelValue.contentChannel ?? {});
-            updateRefValue(contentChannelAttribute, props.modelValue.contentChannelAttribute ?? {});
+            updateRefValue(contentChannelValue, props.modelValue.contentChannel?.value ?? "");
+            updateRefValue(contentChannelAttributeValue, props.modelValue.contentChannelAttribute?.value ?? "");
             updateRefValue(contentChannelItemStatus, props.modelValue.contentChannelItemStatus ?? "");
             updateRefValue(workflowType, props.modelValue.workflowType ?? {});
-            updateRefValue(mediaAccount, props.modelValue.mediaAccount ?? {});
-            updateRefValue(mediaFiles, props.modelValue.mediaElements ?? []);
+            updateRefValue(contentChannelItemAttributes, props.modelValue.contentChannelItemAttributes ?? []);
         });
 
         // Determines which values we want to track changes on (defined in the
         // array) and then emit a new object defined as newValue.
-        watch([attributeValues, description, name, isContentChannelSyncEnabled, contentChannel, contentChannelItemStatus, contentChannelAttribute, workflowType, mediaAccount, ...propRefs], () => {
+        watch([attributeValues, ...propRefs], () => {
             const newValue: MediaFolderBag = {
                 ...props.modelValue,
                 attributeValues: attributeValues.value,
                 description: description.value,
                 name: name.value,
                 isContentChannelSyncEnabled: isContentChannelSyncEnabled.value,
-                contentChannel: contentChannel.value,
+                contentChannel: { value: contentChannelValue.value },
                 contentChannelItemStatus: contentChannelItemStatus.value,
-                contentChannelAttribute: contentChannelAttribute.value,
+                contentChannelAttribute: { value: contentChannelAttributeValue.value },
                 workflowType: workflowType.value,
-                mediaAccount: mediaAccount.value,
-                mediaElements: mediaFiles.value
+                contentChannelItemAttributes: contentChannelItemAttributes.value
             };
 
             emit("update:modelValue", newValue);
         });
+
+        watch(contentChannelValue, () => onUpdateValue(contentChannelValue));
 
         // Watch for any changes to props that represent properties and then
         // automatically emit which property changed.
@@ -162,9 +152,9 @@ export default defineComponent({
                 { text: "Denied", value: "Denied" }
             ] as ListItemBag[],
             contentChannelOptions,
-            mediaFiles,
-            contentChannel,
-            contentChannelAttribute,
+            contentChannelItemAttributes,
+            contentChannelValue,
+            contentChannelAttributeValue,
             contentChannelItemStatus,
             workflowType
         };
@@ -196,14 +186,13 @@ export default defineComponent({
             <div v-if="isContentChannelSyncEnabled">
                 <div class="row">
                     <div class="col-md-6">
-                        <DropDownList v-model="contentChannel.value"
+                        <DropDownList v-model="contentChannelValue"
                             label="Content Channel"
                             :items="contentChannelOptions"
-                            @update:modelValue="onUpdateValue"
                             rules="required" />
-                        <DropDownList v-model="contentChannelAttribute.value"
+                        <DropDownList v-model="contentChannelAttributeValue"
                                       label="Media File Attribute"                                     
-                                      :items="mediaFiles"
+                                      :items="contentChannelItemAttributes"
                                       rules="required" />
                     </div>
                     <div class="col-md-6">

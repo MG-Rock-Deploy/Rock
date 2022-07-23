@@ -44,7 +44,7 @@ export type MediaFolderBag = {
     mediaAccount?: ListItemBag | null;
 
     /** Gets or sets a collection containing the Elements that belong to this Folder. */
-    mediaElements?: ListItemBag[] | null;
+    contentChannelItemAttributes?: ListItemBag[] | null;
 
     /** Gets or sets the Name of the MediaFolder. This property is required. */
     name?: string | null;

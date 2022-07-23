@@ -25,11 +25,11 @@ using Rock.Constants;
 using Rock.Data;
 using Rock.Model;
 using Rock.ViewModels.Blocks;
-using Rock.ViewModels.Blocks.CMS.MediaFolderDetail;
+using Rock.ViewModels.Blocks.Cms.MediaFolderDetail;
 using Rock.ViewModels.Utility;
 using Rock.Web.Cache;
 
-namespace Rock.Blocks.CMS
+namespace Rock.Blocks.Cms
 {
     /// <summary>
     /// Displays the details of a particular media folder.
@@ -37,7 +37,7 @@ namespace Rock.Blocks.CMS
     /// <seealso cref="Rock.Blocks.RockObsidianDetailBlockType" />
 
     [DisplayName( "Media Folder Detail" )]
-    [Category( "CMS" )]
+    [Category( "Cms" )]
     [Description( "Displays the details of a particular media folder." )]
     [IconCssClass( "fa fa-question" )]
 
@@ -94,11 +94,15 @@ namespace Rock.Blocks.CMS
         {
             var options = new MediaFolderDetailOptionsBag();
 
-            options.ContentChannels = new List<ViewModels.Utility.ListItemBag>();
-
-            foreach ( var item in ContentChannelCache.All().OrderBy( a => a.Name ) )
+            if ( isEditable )
             {
-                options.ContentChannels.Add( new ViewModels.Utility.ListItemBag() { Text = item.Name, Value = item.Guid.ToString() } );
+                options.ContentChannels = new List<ViewModels.Utility.ListItemBag>();
+                options.ContentChannelAttributes = new Dictionary<Guid, List<ListItemBag>>();
+                foreach ( var item in ContentChannelCache.All().OrderBy( a => a.Name ) )
+                {
+                    options.ContentChannels.Add( new ViewModels.Utility.ListItemBag() { Text = item.Name, Value = item.Guid.ToString() } );
+                    options.ContentChannelAttributes.Add( item.Guid, GetContentChannelItemAttributes( item.Guid, rockContext ) );
+                }
             }
 
             return options;
@@ -140,8 +144,6 @@ namespace Rock.Blocks.CMS
             {
                 var isViewable = entity.IsAuthorized( Security.Authorization.VIEW, RequestContext.CurrentPerson );
                 box.IsEditable = entity.IsAuthorized( Security.Authorization.EDIT, RequestContext.CurrentPerson );
-                var mediaAccountId = RequestContext.GetPageParameter( PageParameterKey.MediaAccountId ).AsInteger();
-                var mediaAccountService = new MediaAccountService( rockContext );
 
                 if ( loadAttributes )
                 {
@@ -166,9 +168,7 @@ namespace Rock.Blocks.CMS
                     // New entity is being created, prepare for edit mode by default.
                     if ( box.IsEditable )
                     {
-                        var mediaAccount = mediaAccountService.Get( mediaAccountId );
                         box.Entity = GetEntityBagForEdit( entity, loadAttributes );
-                        box.Entity.MediaAccount = new ListItemBag() { Text = mediaAccount?.Name, Value = mediaAccount?.Guid.ToStringSafe() };
                         box.SecurityGrantToken = GetSecurityGrantToken( entity );
                     }
                     else
@@ -200,11 +200,11 @@ namespace Rock.Blocks.CMS
                 IdKey = entity.IdKey,
                 ContentChannel = entity.ContentChannel.ToListItemBag(),
                 ContentChannelAttribute = entity.ContentChannelAttribute.ToListItemBag(),
+                MediaAccount = entity.MediaAccount.ToListItemBag(),
                 Description = entity.Description,
                 IsContentChannelSyncEnabled = entity.IsContentChannelSyncEnabled,
                 IsPublic = entity.IsPublic,
-                MediaAccount = entity.MediaAccount.ToListItemBag(),
-                MediaElements = entity.MediaElements.ToListItemBagList(),
+                ContentChannelItemAttributes = entity.MediaElements.ToListItemBagList(),
                 Name = entity.Name,
                 WorkflowType = entity.WorkflowType.ToListItemBag(),
                 ContentChannelItemStatus = entity.ContentChannelItemStatus.ConvertToStringSafe()
@@ -252,7 +252,7 @@ namespace Rock.Blocks.CMS
             var contentChannelGuid = entity.ContentChannel?.Guid;
             if ( contentChannelGuid.HasValue )
             {
-                bag.MediaElements = GetContentChannelAttributes( contentChannelGuid.Value, new RockContext() );
+                bag.ContentChannelItemAttributes = GetContentChannelItemAttributes( contentChannelGuid.Value, new RockContext() );
             }
 
             if ( loadAttributes )
@@ -294,9 +294,6 @@ namespace Rock.Blocks.CMS
 
             box.IfValidProperty( nameof( box.Entity.IsPublic ),
                 () => entity.IsPublic = box.Entity.IsPublic );
-
-            box.IfValidProperty( nameof( box.Entity.MediaAccount ),
-                () => entity.MediaAccountId = box.Entity.MediaAccount.GetEntityId<MediaAccount>( rockContext ) ?? 0 );
 
             box.IfValidProperty( nameof( box.Entity.Name ),
                 () => entity.Name = box.Entity.Name );
@@ -415,7 +412,7 @@ namespace Rock.Blocks.CMS
         /// <param name="channelGuid"></param>
         /// <param name="rockContext"></param>
         /// <returns></returns>
-        private static List<ListItemBag> GetContentChannelAttributes( Guid channelGuid, RockContext rockContext )
+        private static List<ListItemBag> GetContentChannelItemAttributes( Guid channelGuid, RockContext rockContext )
         {
             var channel = new ContentChannelService( rockContext ).GetNoTracking( channelGuid );
             List<ListItemBag> mediaElementAttributes = new List<ListItemBag>();
@@ -493,6 +490,11 @@ namespace Rock.Blocks.CMS
                 if ( !TryGetEntityForEditAction( box.Entity.IdKey, rockContext, out var entity, out var actionError ) )
                 {
                     return actionError;
+                }
+
+                if ( entity.MediaAccountId == 0 )
+                {
+                    entity.MediaAccountId = RequestContext.GetPageParameter( PageParameterKey.MediaAccountId ).AsInteger();
                 }
 
                 // Update the entity instance from the information in the bag.
@@ -624,7 +626,7 @@ namespace Rock.Blocks.CMS
         {
             using ( var rockContext = new RockContext() )
             {
-                List<ListItemBag> mediaElementAttributes = GetContentChannelAttributes( channelGuid, rockContext );
+                List<ListItemBag> mediaElementAttributes = GetContentChannelItemAttributes( channelGuid, rockContext );
 
                 return ActionOk( new { mediaElementAttributes } );
             }

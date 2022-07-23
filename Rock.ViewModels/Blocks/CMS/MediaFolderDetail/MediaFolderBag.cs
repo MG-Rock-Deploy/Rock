@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 using Rock.ViewModels.Utility;
 
-namespace Rock.ViewModels.Blocks.CMS.MediaFolderDetail
+namespace Rock.ViewModels.Blocks.Cms.MediaFolderDetail
 {
     public class MediaFolderBag : EntityBagBase
     {
@@ -56,7 +56,7 @@ namespace Rock.ViewModels.Blocks.CMS.MediaFolderDetail
         /// <summary>
         /// Gets or sets a collection containing the Elements that belong to this Folder.
         /// </summary>
-        public List<ListItemBag> MediaElements { get; set; }
+        public List<ListItemBag> ContentChannelItemAttributes { get; set; }
 
         /// <summary>
         /// Gets or sets the Name of the MediaFolder. This property is required.

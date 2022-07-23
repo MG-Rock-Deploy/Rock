@@ -26,4 +26,6 @@ import { ListItemBag } from "@Obsidian/ViewModels/Utility/listItemBag";
 export type MediaFolderDetailOptionsBag = {
     /** Gets or sets a collection containing the content channels available. */
     contentChannels?: ListItemBag[] | null;
+    /** Gets or sets the content channels and their attributes. */
+    contentChannelAttributes?: Record<string, ListItemBag[]> | null;
 };

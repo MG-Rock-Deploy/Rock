@@ -16,9 +16,11 @@
 //
 
 using Rock.ViewModels.Utility;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
-namespace Rock.ViewModels.Blocks.CMS.MediaFolderDetail
+namespace Rock.ViewModels.Blocks.Cms.MediaFolderDetail
 {
     public class MediaFolderDetailOptionsBag
     {
@@ -29,5 +31,7 @@ namespace Rock.ViewModels.Blocks.CMS.MediaFolderDetail
         /// The content channels.
         /// </value>
         public List<ListItemBag> ContentChannels { get; set; }
+
+        public Dictionary<Guid, List<ListItemBag>> ContentChannelAttributes { get; set; }
     }
 }

@@ -21,17 +21,17 @@ import { EntityType } from "@Obsidian/SystemGuids";
 import DetailBlock from "@Obsidian/Templates/detailBlock";
 import { DetailPanelMode } from "@Obsidian/Types/Controls/detailPanelMode";
 import { PanelAction } from "@Obsidian/Types/Controls/panelAction";
-import EditPanel from "./MediaFolderDetail/editPanel";
-import ViewPanel from "./MediaFolderDetail/viewPanel";
+import EditPanel from "./MediaFolderDetail/editPanel.partial";
+import ViewPanel from "./MediaFolderDetail/viewPanel.partial";
 import { getSecurityGrant, provideSecurityGrant, refreshDetailAttributes, useConfigurationValues, useInvokeBlockAction } from "@Obsidian/Utility/block";
 import { debounce } from "@Obsidian/Utility/util";
 import { NavigationUrlKey } from "./MediaFolderDetail/types";
 import { DetailBlockBox } from "@Obsidian/ViewModels/Blocks/detailBlockBox";
-import { MediaFolderBag } from "@Obsidian/ViewModels/Blocks/CMS/MediaFolderDetail/mediaFolderBag";
-import { MediaFolderDetailOptionsBag } from "@Obsidian/ViewModels/Blocks/CMS/MediaFolderDetail/mediaFolderDetailOptionsBag";
+import { MediaFolderBag } from "@Obsidian/ViewModels/Blocks/Cms/MediaFolderDetail/mediaFolderBag";
+import { MediaFolderDetailOptionsBag } from "@Obsidian/ViewModels/Blocks/Cms/MediaFolderDetail/mediaFolderDetailOptionsBag";
 
 export default defineComponent({
-    name: "CMS.MediaFolderDetail",
+    name: "Cms.MediaFolderDetail",
 
     components: {
         Alert,
@@ -64,8 +64,6 @@ export default defineComponent({
             "description",
             "isContentChannelSyncEnabled",
             "isPublic",
-            "mediaAccount",
-            "mediaElements",
             "name",
             "workflowType",
             "contentChannelItemStatus"
@@ -99,6 +97,13 @@ export default defineComponent({
 
             if (panelMode.value !== DetailPanelMode.View) {
                 return null;
+            }
+
+            if (mediaFolderViewBag.value?.isContentChannelSyncEnabled === true) {
+                labels.push({
+                    iconCssClass: "fa fa-exchange",
+                    type: "info"
+                })
             }
 
             return labels;
