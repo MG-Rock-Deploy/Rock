@@ -33,6 +33,7 @@
  * - nmiGatewayControl
  * - pageDebugTimings
  * - primaryBlock
+ * - rockAttributeFilter
  * - rockField
  * - rockFormField - I'm waffling, but leaning towards don't include. Also kind of a internal use thing... Not sure, I could be convinced to include it.
  * - saveFinancialAccountForm
@@ -61,7 +62,7 @@ import ItemsWithPreAndPostHtml, { ItemWithPreAndPostHtml } from "@Obsidian/Contr
 import StaticFormControl from "@Obsidian/Controls/staticFormControl";
 import ProgressTracker, { ProgressTrackerItem } from "@Obsidian/Controls/progressTracker";
 import RockForm from "@Obsidian/Controls/rockForm";
-import RockButton from "@Obsidian/Controls/rockButton";
+import RockButton, { BtnSize, BtnType } from "@Obsidian/Controls/rockButton";
 import RadioButtonList from "@Obsidian/Controls/radioButtonList";
 import DropDownList from "@Obsidian/Controls/dropDownList";
 import Dialog from "@Obsidian/Controls/dialog";
@@ -1909,8 +1910,6 @@ const urlLinkBoxGallery = defineComponent({
     name: "UrlLinkBoxGallery",
     components: {
         UrlLinkBox,
-        RockForm,
-        RockButton,
         GalleryAndResult
     },
     setup() {
@@ -4923,6 +4922,70 @@ const progressBarGallery = defineComponent({
 </GalleryAndResult>`
 });
 
+/** Demonstrates Rock Button */
+const rockButtonGallery = defineComponent({
+    name: "RockButtonGallery",
+    components: {
+        GalleryAndResult,
+        RockButton,
+        DropDownList,
+        CheckBox,
+        TextBox
+    },
+    setup() {
+        const sizeOptions: ListItemBag[] = Object.keys(BtnSize).map(key => ({ text: key, value: BtnSize[key] }));
+        const typeOptions: ListItemBag[] = Object.keys(BtnType).map(key => ({ text: key, value: BtnType[key] }));
+
+        return {
+            sizeOptions,
+            typeOptions,
+            btnSize: ref(BtnSize.Default),
+            btnType: ref(BtnType.Default),
+            value: ref(10),
+            onClick: () => new Promise((res) => setTimeout(() => {
+                res(true); alert("done");
+            }, 3000)),
+            autoLoading: ref(false),
+            autoDisable: ref(false),
+            isLoading: ref(false),
+            loadingText: ref("Loading..."),
+            importCode: `import RockButton, { BtnType, BtnSize } from "@Obsidian/Controls/rockButton";`,
+            exampleCode: `<RockButton
+    :btnSize="BtnSize.Default"
+    :btnType="BtnType.Default"
+    @click="onClick"
+    :isLoading="isLoading"
+    :autoLoading="autoLoading"
+    :autoDisable="autoDisable"
+    :loadingText="loadingText">
+    Button Text
+</RockButton>`
+        };
+    },
+    template: `
+<GalleryAndResult
+    :value="value"
+    :importCode="importCode"
+    :exampleCode="exampleCode"
+    enableReflection >
+
+    <RockButton :btnSize="btnSize" :btnType="btnType" @click="onClick" :isLoading="isLoading" :autoLoading="autoLoading" :autoDisable="autoDisable" :loadingText="loadingText">Click Here to Fire Async Operation</RockButton>
+
+    <template #settings>
+        <div class="row">
+            <DropDownList formGroupClasses="col-md-3" label="Button Size" v-model="btnSize" :items="sizeOptions" :showBlankItem="false" />
+            <DropDownList formGroupClasses="col-md-3" label="Button Type" v-model="btnType" :items="typeOptions" :showBlankItem="false" />
+            <CheckBox formGroupClasses="col-md-3" label="Auto Loading Indicator" v-model="autoLoading" />
+            <CheckBox formGroupClasses="col-md-3" label="Auto Disable" v-model="autoDisable" />
+        </div>
+        <div class="row">
+            <CheckBox formGroupClasses="col-md-3" label="Force Loading" v-model="isLoading" />
+            <TextBox formGroupClasses="col-md-3" label="Loading Text" v-model="loadingText" />
+        </div>
+    </template>
+</GalleryAndResult>`
+});
+
 
 const controlGalleryComponents: Record<string, Component> = [
     alertGallery,
@@ -5015,6 +5078,7 @@ const controlGalleryComponents: Record<string, Component> = [
     numberUpDownGroupGallery,
     panelWidgetGallery,
     progressBarGallery,
+    rockButtonGallery,
 ]
     // Sort list by component name
     .sort((a, b) => a.name.localeCompare(b.name))
