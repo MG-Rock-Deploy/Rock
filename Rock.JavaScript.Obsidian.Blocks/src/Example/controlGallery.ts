@@ -35,7 +35,9 @@
  * - primaryBlock
  * - rockAttributeFilter
  * - rockField
- * - rockFormField - I'm waffling, but leaning towards don't include. Also kind of a internal use thing... Not sure, I could be convinced to include it.
+ * - rockForm
+ * - rockFormField
+ * - rockSuspense
  * - saveFinancialAccountForm
  * - secondaryBlock
  * - testGatewayControl
@@ -143,6 +145,7 @@ import CountdownTimer from "@Obsidian/Controls/countdownTimer";
 import ElectronicSignature from "@Obsidian/Controls/electronicSignature";
 import FieldTypeEditor from "@Obsidian/Controls/fieldTypeEditor";
 import InlineSlider from "@Obsidian/Controls/inlineSlider";
+import Slider from "@Obsidian/Controls/slider";
 import JavaScriptAnchor from "@Obsidian/Controls/javaScriptAnchor";
 import KeyValueList from "@Obsidian/Controls/keyValueList";
 import Loading from "@Obsidian/Controls/loading";
@@ -150,6 +153,10 @@ import LoadingIndicator from "@Obsidian/Controls/loadingIndicator";
 import NumberUpDownGroup, { NumberUpDownGroupOption } from "@Obsidian/Controls/numberUpDownGroup";
 import PanelWidget from "@Obsidian/Controls/panelWidget";
 import ProgressBar from "@Obsidian/Controls/progressBar";
+import RockLabel from "@Obsidian/Controls/rockLabel";
+import RockValidation from "@Obsidian/Controls/rockValidation";
+import TabbedContent from "@Obsidian/Controls/tabbedContent";
+import ValueDetailList from "@Obsidian/Controls/valueDetailList";
 
 // #region Gallery Support
 
@@ -4986,6 +4993,195 @@ const rockButtonGallery = defineComponent({
 </GalleryAndResult>`
 });
 
+/** Demonstrates a rock form */
+const rockLabelGallery = defineComponent({
+    name: "RockLabelGallery",
+    components: {
+        GalleryAndResult,
+        RockLabel
+    },
+    setup() {
+        return {
+            importCode: getControlImportPath("rockLabel"),
+            exampleCode: `<RockLabel help="More Info">A Label</RockLabel>`
+        };
+    },
+    template: `
+<GalleryAndResult
+    :importCode="importCode"
+    :exampleCode="exampleCode" >
+
+    <RockLabel help="This is the help message">This is a Rock Label. Hover icon for help.</RockLabel>
+</GalleryAndResult>`
+});
+
+/** Demonstrates a rock validation */
+const rockValidationGallery = defineComponent({
+    name: "RockValidationGallery",
+    components: {
+        GalleryAndResult,
+        RockValidation
+    },
+    setup() {
+        return {
+            errors: [
+                { name: "Error Name", text: "Error text describing the validation error." },
+                { name: "Not Good", text: "This is invalid because it is sinful." },
+                { name: "Trust God", text: "Didn't trust God. Turn to Him." }
+            ],
+            importCode: getControlImportPath("rockValidation"),
+            exampleCode: `<RockValidation :errors="[{ name:'Error Name', text:'Error Description' }]" />`
+        };
+    },
+    template: `
+<GalleryAndResult
+    :importCode="importCode"
+    :exampleCode="exampleCode" >
+
+    <RockValidation :errors="errors" />
+
+    <template #settings>
+        <p>The <code>errors</code> parameter takes an array of <code>FormError</code> objects. <code>FormError</code> type is defined in <code>@Obsidian/Utility/form</code>.</p>
+    </template>
+</GalleryAndResult>`
+});
+
+/** Demonstrates slider */
+const sliderGallery = defineComponent({
+    name: "SliderGallery",
+    components: {
+        GalleryAndResult,
+        Slider,
+        CheckBox,
+        NumberBox
+    },
+    setup() {
+        return {
+            value: ref(10),
+            intOnly: ref(false),
+            min: ref(0),
+            max: ref(100),
+            showValue: ref(false),
+            importCode: getControlImportPath("slider"),
+            exampleCode: `<Slider v-model="value" :isIntegerOnly="intOnly" :min="min" :max="max" :showValueBar="showValue" />`
+        };
+    },
+    template: `
+<GalleryAndResult
+    :value="value"
+    :importCode="importCode"
+    :exampleCode="exampleCode"
+    enableReflection >
+
+    <Slider v-model="value" :isIntegerOnly="intOnly" :min="min" :max="max" :showValueBar="showValue" />
+
+    <template #settings>
+        <div class="row">
+            <CheckBox formGroupClasses="col-md-3" label="Integer Only" v-model="intOnly" />
+            <CheckBox formGroupClasses="col-md-3" label="Show Value" v-model="showValue" />
+            <NumberBox formGroupClasses="col-md-3" label="Minimum Value" v-model="min" />
+            <NumberBox formGroupClasses="col-md-3" label="Maximum Value" v-model="max" />
+        </div>
+    </template>
+</GalleryAndResult>`
+});
+
+/** Demonstrates tabbed content */
+const tabbedContentGallery = defineComponent({
+    name: "TabbedContentGallery",
+    components: {
+        GalleryAndResult,
+        TabbedContent,
+        CheckBox,
+        NumberBox
+    },
+    setup() {
+        return {
+            list: ["Matthew", "Mark", "Luke", "John"],
+            importCode: getControlImportPath("tabbedContent"),
+            exampleCode: `<TabbedContent :tabList="arrayOfItems">
+    <template #tab="{item}">
+        {{ item }}
+    </template>
+    <template #tabpane="{item}">
+        This is the content for {{item}}.
+    </template>
+</TabbedContent>`
+        };
+    },
+    template: `
+<GalleryAndResult
+    :importCode="importCode"
+    :exampleCode="exampleCode" >
+
+
+    <TabbedContent :tabList="list">
+        <template #tab="{item}">
+            {{ item }}
+        </template>
+        <template #tabpane="{item}">
+            This is the content for {{item}}.
+        </template>
+    </TabbedContent>
+</GalleryAndResult>`
+});
+
+/** Demonstrates vertical collapse transition */
+const transitionVerticalCollapseGallery = defineComponent({
+    name: "TransitionVerticalCollapseGallery",
+    components: {
+        GalleryAndResult,
+        TransitionVerticalCollapse,
+        RockButton
+    },
+    setup() {
+        return {
+            showContent: ref(false),
+            importCode: getControlImportPath("transitionVerticalCollapse"),
+            exampleCode: `<TransitionVerticalCollapse>
+    <div v-if="showContent">Content to transition in</div>
+</TransitionVerticalCollapse>`
+        };
+    },
+    template: `
+<GalleryAndResult :importCode="importCode" :exampleCode="exampleCode">
+    <RockButton btnType="primary" class="mb-3" @click="showContent = !showContent">Show Content</RockButton>
+    <TransitionVerticalCollapse>
+        <div v-if="showContent">God so loved the world...</div>
+    </TransitionVerticalCollapse>
+</GalleryAndResult>`
+});
+
+/** Demonstrates a value detail list */
+const valueDetailListGallery = defineComponent({
+    name: "ValueDetailListGallery",
+    components: {
+        GalleryAndResult,
+        ValueDetailList
+    },
+    setup() {
+        return {
+            modelValue: [
+                { title: "Title", textValue: "A text description of this item." },
+                { title: "Something", htmlValue: "This description has <i>some</i> <code>HTML</code> mixed in." }
+            ],
+            importCode: getControlImportPath("valueDetailList"),
+            exampleCode: `<ValueDetailList :modelValue="[{ name:'Error Name', text:'Error Description' }]" />`
+        };
+    },
+    template: `
+<GalleryAndResult
+    :importCode="importCode"
+    :exampleCode="exampleCode" >
+
+    <ValueDetailList :modelValue="modelValue" />
+
+    <template #settings>
+        <p>The <code>modelValue</code> parameter takes an array of <code>ValueDetailListItem</code> objects. <code>ValueDetailListItem</code> type is defined in <code>@Obsidian/Types/Controls/valueDetailListItem</code>.</p>
+    </template>
+</GalleryAndResult>`
+});
+
 
 const controlGalleryComponents: Record<string, Component> = [
     alertGallery,
@@ -5079,6 +5275,12 @@ const controlGalleryComponents: Record<string, Component> = [
     panelWidgetGallery,
     progressBarGallery,
     rockButtonGallery,
+    rockLabelGallery,
+    rockValidationGallery,
+    sliderGallery,
+    tabbedContentGallery,
+    transitionVerticalCollapseGallery,
+    valueDetailListGallery,
 ]
     // Sort list by component name
     .sort((a, b) => a.name.localeCompare(b.name))
