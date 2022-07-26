@@ -15,7 +15,7 @@
 // </copyright>
 //
 
-import { defineComponent, PropType, ref, watch } from "vue";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
 import AttributeValuesContainer from "@Obsidian/Controls/attributeValuesContainer";
 import TextBox from "@Obsidian/Controls/textBox";
 import Switch from "@Obsidian/Controls/switch";
@@ -70,7 +70,6 @@ export default defineComponent({
         const contentChannelValue = propertyRef(props.modelValue.contentChannel?.value ?? "", "ContentChannelId");
         const contentChannelOptions = ref<ListItemBag[]>(props.options.contentChannels ?? []);
         const contentChannelAttributes = ref<Record<string, ListItemBag[]>>(props.options.contentChannelAttributes ?? {});
-        const contentChannelItemAttributes = ref<ListItemBag[]>(props.modelValue.contentChannelItemAttributes ?? []);
         const contentChannelAttributeValue = propertyRef(props.modelValue.contentChannelAttribute?.value ?? "", "ContentChannelAttributeId");
         const contentChannelItemStatus = propertyRef(props.modelValue.contentChannelItemStatus ?? "", "ContentChannelItemStatus");
         const workflowType = propertyRef(props.modelValue.workflowType ?? {}, "WorkflowTypeId");
@@ -82,7 +81,7 @@ export default defineComponent({
         // #endregion
 
         // #region Computed Values
-
+        const contentChannelItemAttributes = computed((): ListItemBag[] => contentChannelAttributes.value[contentChannelValue.value]);
         // #endregion
 
         // #region Functions
@@ -90,13 +89,6 @@ export default defineComponent({
         // #endregion
 
         // #region Event Handlers
-
-        async function onUpdateValue(contentChannel) {
-            if (contentChannel) {
-                const values = Array.from(contentChannelAttributes.value[contentChannel.value]);
-                contentChannelItemAttributes.value = values;
-            }
-        }
 
         // #endregion
 
@@ -111,7 +103,6 @@ export default defineComponent({
             updateRefValue(contentChannelAttributeValue, props.modelValue.contentChannelAttribute?.value ?? "");
             updateRefValue(contentChannelItemStatus, props.modelValue.contentChannelItemStatus ?? "");
             updateRefValue(workflowType, props.modelValue.workflowType ?? {});
-            updateRefValue(contentChannelItemAttributes, props.modelValue.contentChannelItemAttributes ?? []);
         });
 
         // Determines which values we want to track changes on (defined in the
@@ -126,14 +117,11 @@ export default defineComponent({
                 contentChannel: { value: contentChannelValue.value },
                 contentChannelItemStatus: contentChannelItemStatus.value,
                 contentChannelAttribute: { value: contentChannelAttributeValue.value },
-                workflowType: workflowType.value,
-                contentChannelItemAttributes: contentChannelItemAttributes.value
+                workflowType: workflowType.value
             };
 
             emit("update:modelValue", newValue);
         });
-
-        watch(contentChannelValue, () => onUpdateValue(contentChannelValue));
 
         // Watch for any changes to props that represent properties and then
         // automatically emit which property changed.
@@ -145,7 +133,6 @@ export default defineComponent({
             description,
             name,
             isContentChannelSyncEnabled,
-            onUpdateValue,
             channelStatuses: [
                 { text: "Pending Approval", value: "Pending Approval" },
                 { text: "Approved", value: "Approved" },

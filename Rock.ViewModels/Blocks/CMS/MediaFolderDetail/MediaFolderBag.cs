@@ -55,6 +55,7 @@ namespace Rock.ViewModels.Blocks.Cms.MediaFolderDetail
 
         /// <summary>
         /// Gets or sets a collection containing the Elements that belong to this Folder.
+        /// It is used to display the folder's attributes when in view mode.
         /// </summary>
         public List<ListItemBag> ContentChannelItemAttributes { get; set; }
 
