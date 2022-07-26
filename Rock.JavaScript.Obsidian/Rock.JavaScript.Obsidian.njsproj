@@ -122,6 +122,7 @@
     <TypeScriptCompile Include="Framework\Controls\assetStorageProviderPicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\badgeComponentPicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\badgeList.ts" />
+    <TypeScriptCompile Include="Framework\Controls\badgePicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\baseAsyncPicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\binaryFilePicker.ts" />
     <TypeScriptCompile Include="Framework\Controls\binaryFileTypePicker.ts" />
