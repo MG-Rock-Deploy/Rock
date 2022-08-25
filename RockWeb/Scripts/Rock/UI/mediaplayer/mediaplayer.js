@@ -362,7 +362,10 @@ var Rock;
                     MediaElementGuid: this.options.mediaElementGuid,
                     WatchMap: MediaPlayer.toRle(this.watchBits),
                     RelatedEntityTypeId: this.options.relatedEntityTypeId,
-                    RelatedEntityId: this.options.relatedEntityId
+                    RelatedEntityId: this.options.relatedEntityId,
+                    SessionGuid: this.options.sessionGuid,
+                    OriginalUrl: window.location.href,
+                    PageId: Rock.settings.get("pageId")
                 };
                 const xmlRequest = new XMLHttpRequest();
                 const self = this;

@@ -70,6 +70,15 @@ namespace Rock.Client.Enums
 
     /// <summary>
     /// </summary>
+    public enum AppliesToAgeClassification
+    {
+        All = 0x0,
+        Adults = 0x1,
+        Children = 0x2,
+    }
+
+    /// <summary>
+    /// </summary>
     public enum AssessmentRequestStatus
     {
         Pending = 0x0,
@@ -320,6 +329,16 @@ namespace Rock.Client.Enums
 
     /// <summary>
     /// </summary>
+    public enum DueDateType
+    {
+        Immediate = 0x0,
+        ConfiguredDate = 0x1,
+        GroupAttribute = 0x2,
+        DaysAfterJoining = 0x3,
+    }
+
+    /// <summary>
+    /// </summary>
     public enum EmailPreference
     {
         EmailAllowed = 0x0,
@@ -357,6 +376,7 @@ namespace Rock.Client.Enums
         AllActiveAdultsInGivingGroup = 0x0,
         PrimaryGiver = 0x1,
         AllActiveFamilyMembersInGivingGroup = 0x2,
+        DoNotSave = 0x3,
     }
 
     /// <summary>
@@ -656,6 +676,14 @@ namespace Rock.Client.Enums
 
     /// <summary>
     /// </summary>
+    public enum PersonalizationType
+    {
+        Segment = 0x0,
+        RequestFilter = 0x1,
+    }
+
+    /// <summary>
+    /// </summary>
     public enum PrintFrom
     {
         Client = 0x0,
@@ -900,8 +928,8 @@ namespace Rock.Client.Enums
     /// </summary>
     public enum SignatureType
     {
-        Drawn = 0x0,
-        Typed = 0x1,
+        Typed = 0x0,
+        Drawn = 0x1,
     }
 
     /// <summary>
@@ -971,6 +999,15 @@ namespace Rock.Client.Enums
     {
         CpuUsagePercent = 0x0,
         MemoryUsageMegabytes = 0x1,
+    }
+
+    /// <summary>
+    /// </summary>
+    public enum UnitType
+    {
+        Numeric = 0x0,
+        Currency = 0x1,
+        Percentage = 0x2,
     }
 
     /// <summary>

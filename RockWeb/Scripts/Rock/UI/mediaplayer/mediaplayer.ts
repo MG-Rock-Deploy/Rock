@@ -124,6 +124,9 @@ namespace Rock.UI {
 
         /** True if debug information should be logged to the console. */
         debug: boolean;
+
+        /** The unique identifier for the current interaciton session. */
+        sessionGuid?: string;
     }
 
     /**
@@ -145,11 +148,20 @@ namespace Rock.UI {
         /** The watch map in RLE format. */
         WatchMap: string;
 
+        /** The page identifier of the current Rock page. */
+        PageId?: number;
+
         /** The related EntityTypeId for the interaction. */
         RelatedEntityTypeId?: number;
 
         /** The related EntityId for the interaction. */
         RelatedEntityId?: number;
+
+        /** The unique session identifier. */
+        SessionGuid?: string;
+
+        /** The original page URL. */
+        OriginalUrl?: string;
     }
 
     /**
@@ -877,10 +889,13 @@ namespace Rock.UI {
             // Construct the data we will be posting to the API.
             const data: MediaElementInteraction = {
                 InteractionGuid: this.options.interactionGuid,
-                MediaElementGuid: <string>this.options.mediaElementGuid,
+                MediaElementGuid: this.options.mediaElementGuid,
                 WatchMap: MediaPlayer.toRle(this.watchBits),
                 RelatedEntityTypeId: this.options.relatedEntityTypeId,
-                RelatedEntityId: this.options.relatedEntityId
+                RelatedEntityId: this.options.relatedEntityId,
+                SessionGuid: this.options.sessionGuid,
+                OriginalUrl: window.location.href,
+                PageId: (Rock as any).settings.get("pageId")
             }
 
             // Initialize the API request.

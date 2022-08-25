@@ -131,6 +131,7 @@ namespace RockWeb.Blocks.Finance
     #endregion Advanced options
 
     #endregion Block Attributes
+    [Rock.SystemGuid.BlockTypeGuid( "F1ADF375-7442-4B30-BAC3-C387EA9B6C18" )]
     public partial class ScheduledTransactionEditV2 : RockBlock
     {
         #region constants
@@ -504,7 +505,7 @@ mission. We are so grateful for your commitment.</p>
 
             hfScheduledTransactionGuid.Value = scheduledTransaction.Guid.ToString();
 
-            List<int> selectableAccountIds = new FinancialAccountService( rockContext ).GetByGuids( this.GetAttributeValues( AttributeKey.AccountsToDisplay ).AsGuidList() ).Select( a => a.Id ).ToList();
+            List<int> selectableAccountIds = FinancialAccountCache.GetByGuids( this.GetAttributeValues( AttributeKey.AccountsToDisplay ).AsGuidList() ).Select( a => a.Id ).ToList();
 
             CampusAccountAmountPicker.AccountIdAmount[] accountAmounts = scheduledTransaction.ScheduledTransactionDetails.Select( a => new CampusAccountAmountPicker.AccountIdAmount( a.AccountId, a.Amount ) ).ToArray();
 
