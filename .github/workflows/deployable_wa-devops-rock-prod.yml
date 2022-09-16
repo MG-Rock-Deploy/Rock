@@ -26,7 +26,7 @@ jobs:
         run: nuget restore
 
       - name: Publish to folder
-        run: "C:\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\devenv" "c:\\projects\\Rock\\rock.sln" /build Release
+        run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'wa-devops-rock-prod'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FE152F35B5C94821BF594DFEFEA85C9F }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5135DFB3E75541FDA2816E13F13831BD }}
           package: .
